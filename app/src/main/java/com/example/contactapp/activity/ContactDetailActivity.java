@@ -3,6 +3,7 @@ package com.example.contactapp.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -79,6 +80,9 @@ public class ContactDetailActivity extends AppCompatActivity {
         phoneTextView.setText(contact.getPhone());
         emailTextView.setText(contact.getEmail());
         groupTextView.setText(contact.getGroup());
+
+        Log.d("ContactAdapter", "Contact Name: " + contact.getName() + ", PhotoUri: " + contact.getPhotoUri());
+
         if (contact.getPhotoUri() != null) {
             Glide.with(this)
                     .load(Uri.parse(contact.getPhotoUri()))

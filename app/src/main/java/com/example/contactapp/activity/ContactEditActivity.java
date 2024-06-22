@@ -23,6 +23,10 @@ import com.example.contactapp.viewmodel.ContactViewModel;
 import com.example.contactapp.viewmodel.GroupViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -178,16 +182,53 @@ public class ContactEditActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        // 处理图片选择结果
         super.onActivityResult(requestCode, resultCode, data);
+        // 检查请求代码和结果代码，以确保图片被成功选择
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            photoUri = data.getData();
+            // 获取选中图片的URI
+            Uri imageUri = data.getData();
+            // 保存图片到本地存储，并获取本地存储的URI
+            photoUri = saveImageToInternalStorage(imageUri);
+            // 使用Glide加载本地存储的图片到ImageView
             Glide.with(this)
                     .load(photoUri)
                     .apply(RequestOptions.circleCropTransform())
                     .into(contactImageView);
         }
     }
+
+    // 将图片保存到应用的内部存储，并返回本地存储的URI
+    private Uri saveImageToInternalStorage(Uri imageUri) {
+        try {
+            // 打开输入流读取选中的图片
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            if (inputStream == null) return null;
+
+            // 创建一个文件用于存储图片
+            File imageFile = new File(getFilesDir(), "contact_image_" + System.currentTimeMillis() + ".jpg");
+            // 打开输出流将图片写入文件
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+
+            // 将图片从输入流写入输出流
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            // 关闭流
+            outputStream.close();
+            inputStream.close();
+
+            // 返回本地存储的图片URI
+            return Uri.fromFile(imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
     private void setupToolbar() {
         // 设置工具栏

@@ -2,6 +2,8 @@ package com.example.contactapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +12,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.contactapp.model.Contact;
 import com.example.contactapp.viewmodel.ContactViewModel;
 import com.example.contactapp.R;
 import com.example.contactapp.activity.ContactDetailActivity;
+import com.simplecityapps.recyclerview_fastscroll.BuildConfig;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -166,13 +172,32 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         public void bind(Contact contact) {
+            // 设置联系人姓名和电话
             nameTextView.setText(contact.getName());
             phoneTextView.setText(contact.getPhone());
+
+            Log.d("SectionAdapter", "Contact Name: " + contact.getName() + ", PhotoUri: " + contact.getPhotoUri());
+
+            // 检查联系人是否有图片URI
             if (contact.getPhotoUri() != null) {
-                Glide.with(context)
-                        .load(contact.getPhotoUri())
-                        .into(contactImageView);
+                // 解析图片URI
+                Uri photoUri = Uri.parse(contact.getPhotoUri());
+                Log.d("SectionAdapter", "Photo URI: " + photoUri.toString());
+
+                // 创建文件对象，检查文件是否存在
+                File file = new File(photoUri.getPath());
+                if (file.exists()) {
+                    // 使用Glide加载图片文件到ImageView
+                    Glide.with(context)
+                            .load(file)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(contactImageView);
+                } else {
+                    // 如果文件不存在，使用默认图片
+                    contactImageView.setImageResource(R.drawable.ic_default);
+                }
             } else {
+                // 如果没有图片URI，使用默认图片
                 contactImageView.setImageResource(R.drawable.ic_default);
             }
         }
