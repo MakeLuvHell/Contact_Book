@@ -54,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         initContactDao();
         observeContacts();
         initGroupViewModel();
-        setupSwitches();
+        setupViewModeSwitch();
         setupButtons();
     }
 
@@ -103,13 +103,6 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 设置显示方式和主题切换开关。
-     */
-    private void setupSwitches() {
-        setupViewModeSwitch();
-        setupThemeSwitch();
-    }
 
     /**
      * 设置视图模式切换开关。
@@ -122,22 +115,6 @@ public class SettingsActivity extends AppCompatActivity {
         viewModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 PreferenceManager.getDefaultSharedPreferences(this)
                         .edit().putBoolean("card_view_mode", isChecked).apply());
-    }
-
-    /**
-     * 设置主题切换开关。
-     */
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private void setupThemeSwitch() {
-        Switch themeSwitch = findViewById(R.id.switch_theme);
-        themeSwitch.setChecked(PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false));
-        themeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit().putBoolean("dark_theme", isChecked).apply();
-            setResult(RESULT_OK); // 通知 MainActivity 刷新
-            recreate(); // 重新创建以应用新主题
-        });
     }
 
     /**

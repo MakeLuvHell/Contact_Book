@@ -20,7 +20,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    private boolean isDarkTheme;
     private boolean isCardView;
 
     @Override
@@ -43,10 +42,6 @@ public class MainActivity extends AppCompatActivity {
      * 根据用户偏好设置主题。
      */
     private void setupTheme() {
-        isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false);
-        setTheme(isDarkTheme ? R.style.Base_Theme_ContactApp_Dark : R.style.Base_Theme_ContactApp);
-
         isCardView = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("card_view_mode", false);
     }
@@ -79,12 +74,10 @@ public class MainActivity extends AppCompatActivity {
      * 检查用户偏好设置是否更改了主题或视图模式，并重新创建活动以应用更改。
      */
     private void checkForThemeOrViewModeChange() {
-        boolean currentTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false);
         boolean currentView = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("card_view_mode", false);
 
-        if (currentTheme != isDarkTheme || currentView != isCardView) {
+        if (currentView != isCardView) {
             recreate();
         }
     }
