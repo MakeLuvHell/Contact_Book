@@ -11,6 +11,9 @@ import com.example.contactapp.repository.ContactRepository;
 
 import java.util.List;
 
+/**
+ * 测试分支推送
+ */
 public class ContactViewModel extends AndroidViewModel {
     private final ContactRepository repository;
     private final LiveData<List<Contact>> allContacts;
