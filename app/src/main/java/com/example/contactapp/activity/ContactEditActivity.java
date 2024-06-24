@@ -45,7 +45,6 @@ public class ContactEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // 根据用户偏好设置主题
-        setThemeBasedOnPreference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_edit);
 
@@ -56,17 +55,12 @@ public class ContactEditActivity extends AppCompatActivity {
         // 初始化 ViewModel
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
         GroupViewModel groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
+
         loadContactDetails();
         loadGroupData(groupViewModel);
         setEventListeners();
     }
 
-    private void setThemeBasedOnPreference() {
-        // 检查用户偏好设置，并应用相应的主题
-        boolean isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false);
-        setTheme(isDarkTheme ? R.style.Base_Theme_ContactApp_Dark : R.style.Base_Theme_ContactApp);
-    }
 
     private void initializeViews() {
         // 通过ID查找视图
@@ -97,12 +91,24 @@ public class ContactEditActivity extends AppCompatActivity {
         nameEditText.setText(contact.getName());
         phoneEditText.setText(contact.getPhone());
         emailEditText.setText(contact.getEmail());
-        for (int i = 0; i < groupList.size(); i++) {
+
+        /*for (int i = 0; i < groupList.size(); i++) {
             if (groupList.get(i).getId() == contact.getGroupId()) {
                 groupSpinner.setSelection(i);
                 break;
             }
+        }*/
+
+        // 确保分组数据加载后匹配分组选项
+        if (!groupList.isEmpty()) {
+            for (int i = 0; i < groupList.size(); i++) {
+                if (groupList.get(i).getId() == contact.getGroupId()) {
+                    groupSpinner.setSelection(i + 1); // 因为 "未分组" 是第一个选项，所以加1
+                    break;
+                }
+            }
         }
+
         if (contact.getPhotoUri() != null) {
             photoUri = Uri.parse(contact.getPhotoUri());
             Glide.with(this)
@@ -125,6 +131,16 @@ public class ContactEditActivity extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groupNames);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             groupSpinner.setAdapter(adapter);
+
+            // 确保分组数据加载后，匹配选项
+            if (contact != null) {
+                for (int i = 0; i < groupList.size(); i++) {
+                    if (groupList.get(i).getId() == contact.getGroupId()) {
+                        groupSpinner.setSelection(i + 1); // 因为 "未分组" 是第一个选项，所以加1
+                        break;
+                    }
+                }
+            }
         });
     }
 
@@ -227,8 +243,6 @@ public class ContactEditActivity extends AppCompatActivity {
             return null;
         }
     }
-
-
 
     private void setupToolbar() {
         // 设置工具栏
