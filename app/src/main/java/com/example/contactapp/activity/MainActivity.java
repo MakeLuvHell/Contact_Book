@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 根据用户偏好设置主题。
+     * 根据用户偏好设置使用的显示方式。
      */
     private void setupTheme() {
         isCardView = PreferenceManager.getDefaultSharedPreferences(this)
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 检查用户偏好设置是否更改了主题或视图模式，并重新创建活动以应用更改。
+     * 检查用户偏好设置是否更改了视图模式，并重新创建活动以应用更改。
      */
     private void checkForThemeOrViewModeChange() {
         boolean currentView = PreferenceManager.getDefaultSharedPreferences(this)

@@ -61,9 +61,10 @@ public class ContactEditActivity extends AppCompatActivity {
         setEventListeners();
     }
 
-
+    /**
+     * 通过ID查找视图
+     */
     private void initializeViews() {
-        // 通过ID查找视图
         nameEditText = findViewById(R.id.edit_name);
         phoneEditText = findViewById(R.id.edit_phone);
         emailEditText = findViewById(R.id.edit_email);
@@ -72,38 +73,35 @@ public class ContactEditActivity extends AppCompatActivity {
         saveContactButton = findViewById(R.id.save_contact_button);
     }
 
+    /**
+     * 获取传递的联系人ID并加载详细信息
+     */
     private void loadContactDetails() {
-        // 获取传递的联系人ID并加载详细信息
         int contactId = getIntent().getIntExtra("CONTACT_ID", -1);
         if (contactId != -1) {
             contactViewModel.getContactById(contactId).observe(this, contact -> {
                 this.contact = contact;
                 if (contact != null) {
-                    // 将联系人数据填充到视图中
                     populateContactData(contact);
                 }
             });
         }
     }
 
+    /**
+     * 将联系人数据填充到视图中
+     * 确保分组数据加载后匹配分组选项
+     * @param contact 联系人实体
+     */
     private void populateContactData(Contact contact) {
-        // 将联系人数据填充到视图中
         nameEditText.setText(contact.getName());
         phoneEditText.setText(contact.getPhone());
         emailEditText.setText(contact.getEmail());
 
-        /*for (int i = 0; i < groupList.size(); i++) {
-            if (groupList.get(i).getId() == contact.getGroupId()) {
-                groupSpinner.setSelection(i);
-                break;
-            }
-        }*/
-
-        // 确保分组数据加载后匹配分组选项
         if (!groupList.isEmpty()) {
             for (int i = 0; i < groupList.size(); i++) {
                 if (groupList.get(i).getId() == contact.getGroupId()) {
-                    groupSpinner.setSelection(i + 1); // 因为 "未分组" 是第一个选项，所以加1
+                    groupSpinner.setSelection(i + 1);
                     break;
                 }
             }
@@ -118,8 +116,12 @@ public class ContactEditActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 从 ViewModel 加载分组数据并填充到 Spinner 中
+     * 确保分组数据加载后，匹配选项
+     * @param groupViewModel 获取all group的相关信息
+     */
     private void loadGroupData(GroupViewModel groupViewModel) {
-        // 从 ViewModel 加载分组数据并填充到 Spinner 中
         groupViewModel.getAllGroups().observe(this, groups -> {
             groupList.clear();
             groupList.addAll(groups);
@@ -132,7 +134,6 @@ public class ContactEditActivity extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             groupSpinner.setAdapter(adapter);
 
-            // 确保分组数据加载后，匹配选项
             if (contact != null) {
                 for (int i = 0; i < groupList.size(); i++) {
                     if (groupList.get(i).getId() == contact.getGroupId()) {
@@ -144,21 +145,27 @@ public class ContactEditActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 设置点击事件选择图片
+     * 设置保存按钮点击事件
+     */
     private void setEventListeners() {
-        // 设置点击事件选择图片
         contactImageView.setOnClickListener(view -> openImagePicker());
-        // 设置保存按钮点击事件
         saveContactButton.setOnClickListener(view -> saveContact());
     }
 
+    /**
+     * 打开图片选择器
+     */
     private void openImagePicker() {
-        // 打开图片选择器
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * 保存联系人数据
+     */
     private void saveContact() {
-        // 保存联系人数据
         int selectedGroupId = -1;
         String selectedGroupName = "未分组";
 
@@ -168,7 +175,6 @@ public class ContactEditActivity extends AppCompatActivity {
         }
 
         if (contact == null) {
-            // 创建新联系人并插入数据库
             contact = new Contact(
                     nameEditText.getText().toString(),
                     phoneEditText.getText().toString(),
@@ -179,14 +185,17 @@ public class ContactEditActivity extends AppCompatActivity {
             );
             contactViewModel.insert(contact);
         } else {
-            // 更新现有联系人
             updateContactData(selectedGroupId, selectedGroupName);
         }
         finish();
     }
 
+    /**
+     * 更新联系人数据并保存到数据库
+     * @param selectedGroupId 联系人所在分组id
+     * @param selectedGroupName 联系人所在分组名称
+     */
     private void updateContactData(int selectedGroupId, String selectedGroupName) {
-        // 更新联系人数据并保存到数据库
         contact.setName(nameEditText.getText().toString());
         contact.setPhone(phoneEditText.getText().toString());
         contact.setEmail(emailEditText.getText().toString());
@@ -213,7 +222,9 @@ public class ContactEditActivity extends AppCompatActivity {
         }
     }
 
-    // 将图片保存到应用的内部存储，并返回本地存储的URI
+    /**
+     * 将图片保存到应用的内部存储，并返回本地存储的URI
+     */
     private Uri saveImageToInternalStorage(Uri imageUri) {
         try {
             // 打开输入流读取选中的图片
@@ -244,8 +255,10 @@ public class ContactEditActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 设置工具栏
+     */
     private void setupToolbar() {
-        // 设置工具栏
         Toolbar toolbar = findViewById(R.id.toolbar_edit);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("编辑");

@@ -30,8 +30,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // 根据用户偏好设置主题
-        setThemeBasedOnPreference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
 
@@ -46,15 +44,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void setThemeBasedOnPreference() {
-        // 检查用户偏好设置，并应用相应的主题
-        boolean isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false);
-        setTheme(isDarkTheme ? R.style.Base_Theme_ContactApp_Dark : R.style.Base_Theme_ContactApp);
-    }
-
+    /**
+     * 通过ID查找视图
+     */
     private void initializeViews() {
-        // 通过ID查找视图
+
         contactImageView = findViewById(R.id.contact_image);
         nameTextView = findViewById(R.id.name_text);
         phoneTextView = findViewById(R.id.phone_text);
@@ -62,8 +56,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         groupTextView = findViewById(R.id.group_text);
     }
 
+    /**
+     * 初始化 ViewModel 并观察联系人数据变化
+     * @param contactId 传入的联系人id
+     */
     private void loadContactDetails(int contactId) {
-        // 初始化 ViewModel 并观察联系人数据变化
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
         contactViewModel.getContactById(contactId).observe(this, contact -> {
             this.contact = contact;
@@ -74,8 +71,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 将联系人数据填充到视图中
+     * @param contact 通过id获取的联系人实体
+     */
     private void updateUI(Contact contact) {
-        // 将联系人数据填充到视图中
         nameTextView.setText(contact.getName());
         phoneTextView.setText(contact.getPhone());
         emailTextView.setText(contact.getEmail());
@@ -92,7 +92,6 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        // 设置工具栏
         Toolbar toolbar = findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("详情");
@@ -102,14 +101,12 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // 加载菜单布局
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // 处理菜单项点击事件
         if (item.getItemId() == R.id.action_edit) {
             Intent intent = new Intent(ContactDetailActivity.this, ContactEditActivity.class);
             intent.putExtra("CONTACT_ID", contact.getId());

@@ -49,7 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        setupTheme();
         setupToolbar();
         initContactDao();
         observeContacts();
@@ -58,14 +57,6 @@ public class SettingsActivity extends AppCompatActivity {
         setupButtons();
     }
 
-    /**
-     * 设置应用主题，根据用户偏好设置选择暗主题或亮主题。
-     */
-    private void setupTheme() {
-        boolean isDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false);
-        setTheme(isDarkTheme ? R.style.Base_Theme_ContactApp_Dark : R.style.Base_Theme_ContactApp);
-    }
 
     /**
      * 初始化并设置工具栏。
