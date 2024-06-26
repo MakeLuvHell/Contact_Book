@@ -29,13 +29,15 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
     private final ContactViewModel contactViewModel;
     private final GroupViewModel groupViewModel;
     private final List<Contact> contactList;
+    private final boolean useCardView;
 
-    public GroupAdapter(Context context, ContactViewModel contactViewModel, GroupViewModel groupViewModel, List<Contact> contactList) {
+    public GroupAdapter(Context context, ContactViewModel contactViewModel, GroupViewModel groupViewModel, List<Contact> contactList, boolean useCardView) {
         super(DIFF_CALLBACK);
         this.context = context;
         this.contactViewModel = contactViewModel;
         this.groupViewModel = groupViewModel;
         this.contactList = contactList;
+        this.useCardView = useCardView;
     }
 
     private static final DiffUtil.ItemCallback<Group> DIFF_CALLBACK = new DiffUtil.ItemCallback<Group>() {
@@ -85,7 +87,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
                     .filter(contact -> contact.getGroupId() == group.getId())
                     .collect(Collectors.toList());
 
-            ContactAdapter contactAdapter = new ContactAdapter(context, contactViewModel);
+            ContactAdapter contactAdapter = new ContactAdapter(context, contactViewModel, useCardView);
             contactsRecyclerView.setAdapter(contactAdapter);
             contactsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             contactAdapter.submitList(filteredContacts);

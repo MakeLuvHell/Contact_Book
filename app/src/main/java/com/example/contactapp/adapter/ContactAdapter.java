@@ -28,11 +28,15 @@ import java.io.File;
 public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactViewHolder> {
     private final Context context;
     private final ContactViewModel contactViewModel;
+    private final boolean useCardView;
+    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_CARD = 2;
 
-    public ContactAdapter(Context context, ContactViewModel contactViewModel) {
+    public ContactAdapter(Context context, ContactViewModel contactViewModel, boolean useCardView) {
         super(DIFF_CALLBACK);
         this.context = context;
         this.contactViewModel = contactViewModel;
+        this.useCardView = useCardView;
     }
 
     private static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
@@ -47,13 +51,22 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
         }
     };
 
+    @Override
+    public int getItemViewType(int position) {
+         return useCardView ? TYPE_CARD : TYPE_ITEM;
+    }
+
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // 创建并返回 ContactViewHolder
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_contact_card, parent, false);
-        return new ContactViewHolder(itemView);
+        if (viewType == TYPE_CARD) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_card, parent, false);
+            return new ContactViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_list, parent, false);
+            return new ContactViewHolder(view);
+        }
     }
 
     @Override

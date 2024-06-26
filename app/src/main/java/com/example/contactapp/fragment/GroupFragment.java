@@ -32,6 +32,7 @@ public class GroupFragment extends Fragment {
     private GroupAdapter groupAdapter;
     private GroupViewModel groupViewModel;
     private ContactViewModel contactViewModel;
+    private boolean useCardView;
 
     @Nullable
     @Override
@@ -44,6 +45,9 @@ public class GroupFragment extends Fragment {
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
         groupViewModel = new ViewModelProvider(this).get(GroupViewModel.class);
 
+        useCardView = PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getBoolean("card_view_mode", false);
+
         // 观察分组数据的变化
         groupViewModel.getAllGroups().observe(getViewLifecycleOwner(), groups -> {
             List<Group> visibleGroups = new ArrayList<>();
@@ -55,7 +59,7 @@ public class GroupFragment extends Fragment {
                 }
             }
             contactViewModel.getAllContacts().observe(getViewLifecycleOwner(), contacts -> {
-                groupAdapter = new GroupAdapter(getContext(), contactViewModel, groupViewModel, contacts);
+                groupAdapter = new GroupAdapter(getContext(), contactViewModel, groupViewModel, contacts, useCardView);
                 recyclerView.setAdapter(groupAdapter);
                 groupAdapter.submitList(visibleGroups);
             });
