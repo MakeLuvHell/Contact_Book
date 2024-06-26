@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 分组适配器类，用于显示联系人分组列表
+ */
 public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolder> {
     private final Context context;
     private final ContactViewModel contactViewModel;
@@ -31,6 +34,14 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
     private final List<Contact> contactList;
     private final boolean useCardView;
 
+    /**
+     * 构造函数，初始化适配器
+     * @param context 上下文对象
+     * @param contactViewModel 联系人视图模型
+     * @param groupViewModel 分组视图模型
+     * @param contactList 联系人列表
+     * @param useCardView 是否使用卡片视图
+     */
     public GroupAdapter(Context context, ContactViewModel contactViewModel, GroupViewModel groupViewModel, List<Contact> contactList, boolean useCardView) {
         super(DIFF_CALLBACK);
         this.context = context;
@@ -40,6 +51,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
         this.useCardView = useCardView;
     }
 
+    // 定义用于计算差异的回调
     private static final DiffUtil.ItemCallback<Group> DIFF_CALLBACK = new DiffUtil.ItemCallback<Group>() {
         @Override
         public boolean areItemsTheSame(@NonNull Group oldItem, @NonNull Group newItem) {
@@ -68,16 +80,27 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
         holder.bind(currentGroup);
     }
 
+    /**
+     * 分组视图持有者类，用于绑定视图和数据
+     */
     class GroupViewHolder extends RecyclerView.ViewHolder {
         private final TextView groupNameTextView;
         private final RecyclerView contactsRecyclerView;
 
+        /**
+         * 构造函数，初始化视图持有者
+         * @param itemView 视图对象
+         */
         public GroupViewHolder(@NonNull View itemView) {
             super(itemView);
             groupNameTextView = itemView.findViewById(R.id.group_name);
             contactsRecyclerView = itemView.findViewById(R.id.contacts_recycler_view);
         }
 
+        /**
+         * 绑定分组数据到视图
+         * @param group 分组对象
+         */
         public void bind(Group group) {
             // 将分组数据填充到视图中
             groupNameTextView.setText(group.getName());
@@ -87,6 +110,7 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
                     .filter(contact -> contact.getGroupId() == group.getId())
                     .collect(Collectors.toList());
 
+            // 创建联系人适配器并设置到RecyclerView
             ContactAdapter contactAdapter = new ContactAdapter(context, contactViewModel, useCardView);
             contactsRecyclerView.setAdapter(contactAdapter);
             contactsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -117,6 +141,10 @@ public class GroupAdapter extends ListAdapter<Group, GroupAdapter.GroupViewHolde
         }
     }
 
+    /**
+     * 删除分组及其下的所有联系人
+     * @param group 分组对象
+     */
     private void deleteGroupAndContacts(Group group) {
         // 删除该分组下的所有联系人
         List<Contact> contactsToDelete = contactList.stream()

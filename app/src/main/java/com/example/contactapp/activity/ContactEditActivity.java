@@ -7,12 +7,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.preference.PreferenceManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class ContactEditActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -163,9 +164,46 @@ public class ContactEditActivity extends AppCompatActivity {
     }
 
     /**
+     * 验证电话号是否符合规范
+     * @param phone 电话号码
+     * @return 是否符合规范
+     */
+    private boolean isValidPhone(String phone) {
+        return Pattern.compile("^\\+?[0-9. ()-]{10,25}$").matcher(phone).matches();
+    }
+
+    /**
+     * 验证邮件是否符合规范
+     * @param email 邮件地址
+     * @return 是否符合规范
+     */
+    private boolean isValidEmail(String email) {
+        return Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$").matcher(email).matches();
+    }
+
+    /**
      * 保存联系人数据
      */
     private void saveContact() {
+        String name = nameEditText.getText().toString().trim();
+        String phone = phoneEditText.getText().toString().trim();
+        String email = emailEditText.getText().toString().trim();
+
+        if (name.isEmpty() || phone.isEmpty() || email.isEmpty()) {
+            Toast.makeText(this, "请填写所有字段", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isValidPhone(phone)) {
+            Toast.makeText(this, "请输入有效的电话号码", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            Toast.makeText(this, "请输入有效的电子邮件地址", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int selectedGroupId = -1;
         String selectedGroupName = "未分组";
 
@@ -176,29 +214,32 @@ public class ContactEditActivity extends AppCompatActivity {
 
         if (contact == null) {
             contact = new Contact(
-                    nameEditText.getText().toString(),
-                    phoneEditText.getText().toString(),
-                    emailEditText.getText().toString(),
+                    name,
+                    phone,
+                    email,
                     selectedGroupId,
                     selectedGroupName,
                     photoUri != null ? photoUri.toString() : null
             );
             contactViewModel.insert(contact);
         } else {
-            updateContactData(selectedGroupId, selectedGroupName);
+            updateContactData(name, phone, email, selectedGroupId, selectedGroupName);
         }
         finish();
     }
 
     /**
      * 更新联系人数据并保存到数据库
+     * @param name 联系人姓名
+     * @param phone 联系人电话
+     * @param email 联系人邮件
      * @param selectedGroupId 联系人所在分组id
      * @param selectedGroupName 联系人所在分组名称
      */
-    private void updateContactData(int selectedGroupId, String selectedGroupName) {
-        contact.setName(nameEditText.getText().toString());
-        contact.setPhone(phoneEditText.getText().toString());
-        contact.setEmail(emailEditText.getText().toString());
+    private void updateContactData(String name, String phone, String email, int selectedGroupId, String selectedGroupName) {
+        contact.setName(name);
+        contact.setPhone(phone);
+        contact.setEmail(email);
         contact.setGroupId(selectedGroupId);
         contact.setGroup(selectedGroupName);
         contact.setPhotoUri(photoUri != null ? photoUri.toString() : null);
@@ -224,6 +265,8 @@ public class ContactEditActivity extends AppCompatActivity {
 
     /**
      * 将图片保存到应用的内部存储，并返回本地存储的URI
+     * @param imageUri 图片的Uri
+     * @return 本地存储的Uri
      */
     private Uri saveImageToInternalStorage(Uri imageUri) {
         try {

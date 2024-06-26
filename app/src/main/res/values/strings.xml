@@ -7,14 +7,22 @@
     <string name="edit_contact">Edit contact</string>
     <string name="delete_contact">Delete contact</string>
     <string name="save_contact">Save</string>
-    <string name="name">Name</string>
-    <string name="alt_name">Alternate Name</string>
-    <string name="phone">Phone</string>
-    <string name="email">Email</string>
-    <string name="group">Group</string>
+    <string name="save">保存</string>
+    <string name="name">姓名</string>
+    <string name="phone">电话</string>
+    <string name="email">邮件</string>
+    <string name="group">分组</string>
     <string name="display_as_cards">Display contacts as cards</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="add_group">Add Group</string>
     <string name="image">image</string>
     <string name="Search_hint">请输入姓名查询</string>
+    <string name="contact_image">Contact image</string>
+    <string name="message">消息</string>
+    <string name="call">呼叫</string>
+    <string name="video">视频</string>
+    <string name="card_view">卡片视图</string>
+    <string name="manage_group">管理分组</string>
+    <string name="export_contact">导出联系人</string>
+    <string name="import_contact">导入联系人</string>
 </resources>

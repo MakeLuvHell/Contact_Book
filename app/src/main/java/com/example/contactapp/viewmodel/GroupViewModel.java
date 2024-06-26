@@ -1,48 +1,42 @@
-    package com.example.contactapp.viewmodel;
+package com.example.contactapp.viewmodel;
 
-    import android.app.Application;
+import android.app.Application;
 
-    import androidx.annotation.NonNull;
-    import androidx.lifecycle.AndroidViewModel;
-    import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
-    import com.example.contactapp.model.Group;
-    import com.example.contactapp.repository.GroupRepository;
+import com.example.contactapp.model.Group;
+import com.example.contactapp.repository.GroupRepository;
 
-    import java.util.List;
+import java.util.List;
 
-    public class GroupViewModel extends AndroidViewModel {
+public class GroupViewModel extends AndroidViewModel {
 
-        private final GroupRepository repository;
-        private final LiveData<List<Group>> allGroups;
+    private final GroupRepository repository;
+    private final LiveData<List<Group>> allGroups;
 
-        public GroupViewModel(@NonNull Application application) {
+    public GroupViewModel(@NonNull Application application) {
             super(application);
             repository = new GroupRepository(application);
             allGroups = repository.getAllGroups();
-        }
+    }
 
-        public LiveData<List<Group>> getAllGroups() {
-            return allGroups;
-        }
+    public LiveData<List<Group>> getAllGroups() {return allGroups;}
 
-        public void insertGroup(Group group) {
-            repository.insert(group);
-        }
+    public void insertGroup(Group group) {repository.insert(group);}
 
-        public void delete(Group group) {
-            repository.delete(group);
-        }
+    public void delete(Group group) {repository.delete(group);}
 
-        public boolean checkIfGroupExists(String groupName) {
-            List<Group> groups = allGroups.getValue();
-            if (groups != null) {
-                for (Group group : groups) {
-                    if (group.getName().equals(groupName)) {
-                        return true;
-                    }
+
+    public boolean checkIfGroupExists(String groupName) {
+        List<Group> groups = allGroups.getValue();
+        if (groups != null) {
+            for (Group group : groups) {
+                if (group.getName().equals(groupName)) {
+                    return true;
                 }
             }
-            return false;
-        }
+        }return false;
     }
+}

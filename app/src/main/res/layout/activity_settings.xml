@@ -22,13 +22,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:minHeight="48dp"
-        android:text="卡片视图"
+        android:text="@string/card_view"
         android:textSize="18sp"
         android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_settings"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        tools:ignore="UseSwitchCompatOrMaterialXml,VisualLintButtonSize" />
 
     <Button
         android:id="@+id/button_group_settings"
@@ -38,11 +38,12 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="管理分组"
+        android:text="@string/manage_group"
         android:textColor="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_card_view" />
+        app:layout_constraintTop_toBottomOf="@+id/switch_card_view"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/button_export"
@@ -52,12 +53,13 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="导出联系人"
+        android:text="@string/export_contact"
         android:textColor="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_group_settings" />
+        app:layout_constraintTop_toBottomOf="@id/button_group_settings"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/button_import"
@@ -67,11 +69,12 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="导入联系人"
+        android:text="@string/import_contact"
         android:textColor="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_export" />
+        app:layout_constraintTop_toBottomOf="@id/button_export"
+        tools:ignore="VisualLintButtonSize" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

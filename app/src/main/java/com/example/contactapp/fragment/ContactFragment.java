@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * 联系人Fragment类，用于显示联系人列表
+ */
 public class ContactFragment extends Fragment {
     private RecyclerView recyclerView;
     private SectionAdapter sectionAdapter;
@@ -99,8 +102,12 @@ public class ContactFragment extends Fragment {
         });
     }
 
+    /**
+     * 将字符串转换为拼音
+     * @param input 输入字符串
+     * @return 拼音字符串
+     */
     private String getPinyin(String input) {
-        // 将字符串转换为拼音
         StringBuilder pinyin = new StringBuilder();
         for (char c : input.toCharArray()) {
             String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(c);
@@ -113,8 +120,11 @@ public class ContactFragment extends Fragment {
         return pinyin.toString();
     }
 
+    /**
+     * 过滤联系人列表
+     * @param text 输入的过滤文本
+     */
     private void filter(String text) {
-        // 过滤联系人列表
         contactViewModel.getAllContacts().observe(getViewLifecycleOwner(), contacts -> {
             List<Contact> filteredList = contacts.stream()
                     .filter(contact -> contact.getName().toLowerCase().contains(text.toLowerCase()))

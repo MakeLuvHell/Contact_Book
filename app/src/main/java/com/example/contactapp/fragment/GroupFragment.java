@@ -27,6 +27,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 分组Fragment类，用于显示联系人分组列表
+ */
 public class GroupFragment extends Fragment {
     private RecyclerView recyclerView;
     private GroupAdapter groupAdapter;

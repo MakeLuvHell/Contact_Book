@@ -25,6 +25,9 @@ import com.example.contactapp.viewmodel.ContactViewModel;
 
 import java.io.File;
 
+/**
+ * 联系人适配器类，用于显示联系人列表
+ */
 public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactViewHolder> {
     private final Context context;
     private final ContactViewModel contactViewModel;
@@ -32,6 +35,12 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_CARD = 2;
 
+    /**
+     * 构造函数，初始化适配器
+     * @param context 上下文对象
+     * @param contactViewModel 联系人视图模型
+     * @param useCardView 是否使用卡片视图
+     */
     public ContactAdapter(Context context, ContactViewModel contactViewModel, boolean useCardView) {
         super(DIFF_CALLBACK);
         this.context = context;
@@ -39,6 +48,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
         this.useCardView = useCardView;
     }
 
+    // 定义用于计算差异的回调
     private static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
         @Override
         public boolean areItemsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
@@ -53,20 +63,20 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
 
     @Override
     public int getItemViewType(int position) {
-         return useCardView ? TYPE_CARD : TYPE_ITEM;
+        return useCardView ? TYPE_CARD : TYPE_ITEM;
     }
 
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // 创建并返回 ContactViewHolder
+        View view;
         if (viewType == TYPE_CARD) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_card, parent, false);
-            return new ContactViewHolder(view);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_card, parent, false);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_list, parent, false);
-            return new ContactViewHolder(view);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact_list, parent, false);
         }
+        return new ContactViewHolder(view);
     }
 
     @Override
@@ -76,16 +86,24 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
         holder.bind(currentContact);
     }
 
+    /**
+     * 联系人视图持有者类，用于绑定视图和数据
+     */
     class ContactViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameTextView, phoneTextView;
         private final ImageView contactImageView;
 
+        /**
+         * 构造函数，初始化视图持有者
+         * @param itemView 视图对象
+         */
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.contact_name);
             phoneTextView = itemView.findViewById(R.id.contact_phone);
             contactImageView = itemView.findViewById(R.id.contact_image);
 
+            // 设置点击事件，打开联系人详情
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -96,6 +114,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
                 }
             });
 
+            // 设置长按事件，显示删除确认对话框
             itemView.setOnLongClickListener(view -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -106,6 +125,10 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
             });
         }
 
+        /**
+         * 绑定联系人数据到视图
+         * @param contact 联系人对象
+         */
         public void bind(Contact contact) {
             // 设置联系人姓名和电话
             nameTextView.setText(contact.getName());
@@ -137,7 +160,10 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
             }
         }
 
-
+        /**
+         * 显示删除确认对话框
+         * @param contact 联系人对象
+         */
         private void showDeleteConfirmationDialog(Contact contact) {
             // 显示删除确认对话框
             new AlertDialog.Builder(context)
@@ -149,4 +175,3 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.ContactV
         }
     }
 }
-

@@ -12,16 +12,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.contactapp.model.Contact;
-import com.example.contactapp.viewmodel.ContactViewModel;
 import com.example.contactapp.R;
 import com.example.contactapp.activity.ContactDetailActivity;
-import com.simplecityapps.recyclerview_fastscroll.BuildConfig;
+import com.example.contactapp.model.Contact;
+import com.example.contactapp.viewmodel.ContactViewModel;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 
@@ -30,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * 分段适配器类，用于显示带有分段标题的联系人列表
+ */
 public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
@@ -39,6 +40,12 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final List<Object> itemsWithHeaders;
     private final boolean useCardView;
 
+    /**
+     * 构造函数，初始化适配器
+     * @param context 上下文对象
+     * @param contactViewModel 联系人视图模型
+     * @param useCardView 是否使用卡片视图
+     */
     public SectionAdapter(Context context, ContactViewModel contactViewModel, boolean useCardView) {
         this.context = context;
         this.contactViewModel = contactViewModel;
@@ -46,6 +53,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.useCardView = useCardView;
     }
 
+    /**
+     * 提交带有分段标题的联系人列表
+     * @param list 联系人列表
+     */
     public void submitListWithHeaders(List<Contact> list) {
         itemsWithHeaders.clear();
 
@@ -71,13 +82,18 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
+    /**
+     * 获取联系人姓名的首字母
+     * @param name 联系人姓名
+     * @return 首字母字符
+     */
     private char getHeaderChar(String name) {
         if (name == null || name.isEmpty()) {
             return '#';
         }
         char firstChar = name.charAt(0);
         if (Character.isLetter(firstChar)) {
-            if (Character.toString(firstChar).matches("[\\u4e00-\\u9fa5]+")) { // Check if it is a Chinese character
+            if (Character.toString(firstChar).matches("[\\u4e00-\\u9fa5]+")) { // 检查是否为汉字
                 String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(firstChar);
                 if (pinyinArray != null && pinyinArray.length > 0) {
                     return Character.toUpperCase(pinyinArray[0].charAt(0));
@@ -127,24 +143,42 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return itemsWithHeaders.size();
     }
 
+    /**
+     * 分段标题视图持有者类，用于绑定视图和数据
+     */
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
         private final TextView headerTextView;
 
+        /**
+         * 构造函数，初始化视图持有者
+         * @param itemView 视图对象
+         */
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
             headerTextView = itemView.findViewById(R.id.header_text);
         }
 
+        /**
+         * 绑定分段标题数据到视图
+         * @param header 分段标题
+         */
         public void bind(String header) {
             headerTextView.setText(header);
         }
     }
 
+    /**
+     * 联系人视图持有者类，用于绑定视图和数据
+     */
     class ContactViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameTextView;
         private final TextView phoneTextView;
         private final ImageView contactImageView;
 
+        /**
+         * 构造函数，初始化视图持有者
+         * @param itemView 视图对象
+         */
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.contact_name);
@@ -171,6 +205,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
 
+        /**
+         * 绑定联系人数据到视图
+         * @param contact 联系人对象
+         */
         public void bind(Contact contact) {
             // 设置联系人姓名和电话
             nameTextView.setText(contact.getName());
@@ -202,6 +240,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         }
 
+        /**
+         * 显示删除确认对话框
+         * @param contact 联系人对象
+         */
         private void showDeleteConfirmationDialog(Contact contact) {
             new AlertDialog.Builder(context)
                     .setTitle("删除联系人")
@@ -212,6 +254,11 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /**
+     * 获取特定分段的位置
+     * @param section 分段字符
+     * @return 位置索引
+     */
     public int getPositionForSection(char section) {
         for (int i = 0; i < itemsWithHeaders.size(); i++) {
             Object item = itemsWithHeaders.get(i);

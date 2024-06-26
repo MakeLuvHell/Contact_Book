@@ -75,31 +75,28 @@ public class SideLetterBar extends View {
         final int oldChosen = chosen; // 记录之前选中的字母索引
         final int c = (int) (y / getHeight() * letters.length); // 计算当前触摸点对应的字母索引
 
-        switch (action) {
-            case MotionEvent.ACTION_UP:
-                setBackgroundColor(Color.TRANSPARENT); // 触摸结束时设置背景透明
-                chosen = -1; // 重置选中字母索引
-                invalidate(); // 重新绘制
-                if (overlay != null) {
-                    overlay.setVisibility(GONE); // 隐藏提示TextView
-                }
-                break;
-            default:
-                setBackgroundResource(R.drawable.sidebar_background); // 设置触摸时的背景
-                if (oldChosen != c) {
-                    if (c >= 0 && c < letters.length) {
-                        if (onLetterChangedListener != null) {
-                            onLetterChangedListener.onLetterChanged(letters[c]); // 调用字母变化的回调方法
-                        }
-                        if (overlay != null) {
-                            overlay.setText(letters[c]); // 设置提示TextView的文字
-                            overlay.setVisibility(VISIBLE); // 显示提示TextView
-                        }
-                        chosen = c; // 更新选中字母索引
-                        invalidate(); // 重新绘制
+        if (action == MotionEvent.ACTION_UP) {
+            setBackgroundColor(Color.TRANSPARENT); // 触摸结束时设置背景透明
+            chosen = -1; // 重置选中字母索引
+            invalidate(); // 重新绘制
+            if (overlay != null) {
+                overlay.setVisibility(GONE); // 隐藏提示TextView
+            }
+        } else {
+            setBackgroundResource(R.drawable.sidebar_background); // 设置触摸时的背景
+            if (oldChosen != c) {
+                if (c >= 0 && c < letters.length) {
+                    if (onLetterChangedListener != null) {
+                        onLetterChangedListener.onLetterChanged(letters[c]); // 调用字母变化的回调方法
                     }
+                    if (overlay != null) {
+                        overlay.setText(letters[c]); // 设置提示TextView的文字
+                        overlay.setVisibility(VISIBLE); // 显示提示TextView
+                    }
+                    chosen = c; // 更新选中字母索引
+                    invalidate(); // 重新绘制
                 }
-                break;
+            }
         }
         return true;
     }
